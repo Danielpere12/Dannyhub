@@ -1,659 +1,376 @@
-<!doctype html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ARCHI‑ERP — One‑Page Dashboard</title>
-  <meta name="description" content="Fully responsive one‑page ERP dashboard for an architectural company. Includes projects, tasks/kanban, timesheets, RFIs, drawings, resources, invoices, clients & calendar." />
+  <title>ELEGIDO</title>
+  <meta name="description" content="ELEGIDO – Innovation. Integration. Impact. Chosen to create, built to innovate. Elegance in every line of code." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg: #0b0d12;
-      --card: #121620;
-      --muted: #aab1c3;
-      --text: #eaf0ff;
-      --accent: #66e3d3; /* teal */
-      --accent-2:#7aa9ff; /* blue */
-      --ok:#41d5a2; --warn:#ffc857; --bad:#ff6961; --info:#7aa9ff;
-      --line:#1e2533; --chip:#202737; --chipText:#b8c2d9; --border:#1d2433;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --brand1:#1e3c72; /* pulled from logo gradient */
+      --brand2:#2a5298; /* pulled from logo gradient */
+      --ink:#0e1220;
+      --ink-weak:#6a7086;
+      --bg:#ffffff;
+      --bg-soft:#f5f7fb;
+      --border:#e6e9f3;
+      --card:#ffffff;
+      --shadow:0 12px 28px rgba(16,24,40,.08),0 2px 10px rgba(16,24,40,.04);
     }
-    html[data-theme="light"]{
-      --bg: #f6f8fb; --card:#ffffff; --muted:#5c667a; --text:#0d1424; --line:#e8edf5; --chip:#f1f4fa; --chipText:#3c4659; --border:#e9edf5; --shadow: 0 10px 24px rgba(18, 31, 53, 0.06);
+    @media (prefers-color-scheme: dark){
+      :root{--ink:#e7e9f3;--ink-weak:#aeb2c6;--bg:#0b0f1a;--bg-soft:#0f1526;--card:#11182a;--border:#1f2740;--shadow:0 14px 30px rgba(0,0,0,.5)}
     }
     *{box-sizing:border-box}
-    body{margin:0;font:14px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji"; background:var(--bg); color:var(--text)}
-    a{color:inherit;text-decoration:none}
-    .container{max-width:1200px;margin:0 auto;padding:20px}
-    header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.04)}
-    .nav{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);backdrop-filter:saturate(180%) blur(8px)}
-    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.3px}
-    .logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:var(--shadow)}
-    .logo svg{width:24px;height:24px;fill:#0b0d12}
-    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--card);padding:10px 12px;border-radius:12px;cursor:pointer;transition:.2s box-shadow,.2s transform}
-    .btn:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0b0d12;border-color:transparent;font-weight:600}
-    .btn.icon{padding:10px}
+    html,body{margin:0;padding:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);scroll-behavior:smooth}
+    a{text-decoration:none;color:inherit}
+    .container{width:min(1160px,92vw);margin-inline:auto}
+    /* Header */
+    header{position:sticky;top:0;z-index:60;background:color-mix(in oklab, var(--bg), transparent 10%);backdrop-filter:saturate(140%) blur(8px);border-bottom:1px solid var(--border)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0;gap:14px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.2px}
+    .brand img{height:40px;width:auto}
+    nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+    nav a{padding:10px 12px;border-radius:10px;color:var(--ink-weak);font-weight:600}
+    nav a:hover,nav a.active{background:var(--bg-soft);color:var(--ink)}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff;font-weight:700;box-shadow:var(--shadow);border:0;cursor:pointer}
+    .menu{display:none}
 
-    .toolbar{display:grid;grid-template-columns:1fr auto;gap:10px;padding:14px 20px;border-bottom:1px solid var(--border)}
-    .search{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
-    .search input{border:0;outline:none;background:transparent;color:var(--text);width:100%;font-size:14px}
-    .filters{display:flex;gap:10px;flex-wrap:wrap}
-    select{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+    /* Hero */
+    .hero{position:relative;overflow:hidden;background:radial-gradient(1200px 600px at 100% -20%, color-mix(in oklab, var(--brand2), transparent 70%), transparent),
+                                      radial-gradient(900px 500px at -10% 120%, color-mix(in oklab, var(--brand1), transparent 65%), transparent)}
+    .hero-inner{padding:clamp(68px,9vw,110px) 0 84px;display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+    .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:12px;letter-spacing:.3px;text-transform:uppercase;color:var(--brand2);background:var(--bg-soft);padding:6px 10px;border-radius:999px;font-weight:800}
+    h1{font-size:clamp(36px,5.5vw,64px);line-height:1.04;margin:10px 0 12px;letter-spacing:-.4px}
+    .lead{font-size:clamp(16px,2.1vw,19px);color:var(--ink-weak);margin:0 0 24px}
+    .hero-art{border:1px solid var(--border);border-radius:22px;min-height:300px;box-shadow:var(--shadow);position:relative;background:linear-gradient(135deg, color-mix(in oklab, var(--brand1), white 10%), color-mix(in oklab, var(--brand2), white 10%))}
+    .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .chip{font-size:12px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;background:var(--bg-soft);color:var(--ink-weak);padding:6px 10px;border-radius:999px}
 
-    main{padding:20px}
-    .grid{display:grid;gap:16px}
-    @media(min-width:900px){.grid.cols-4{grid-template-columns:repeat(4,1fr)}.grid.cols-3{grid-template-columns:repeat(3,1fr)}.grid.cols-2{grid-template-columns:repeat(2,1fr)}}
+    /* Sections */
+    section{padding:84px 0}
+    .section-head{display:grid;gap:6px;margin-bottom:26px}
+    .section-eyebrow{color:var(--brand2);font-weight:800;font-size:12px;letter-spacing:.35px;text-transform:uppercase}
+    .section-title{font-size:clamp(28px,4vw,40px);letter-spacing:-.3px}
+    .section-sub{color:var(--ink-weak)}
 
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
-    .card h3{margin:0 0 8px;font-size:14px;color:var(--muted);font-weight:600}
-    .kpi{display:flex;align-items:flex-end;justify-content:space-between}
-    .kpi .big{font-size:28px;font-weight:800;letter-spacing:.2px}
-    .chip{display:inline-flex;align-items:center;gap:6px;background:var(--chip);color:var(--chipText);border-radius:999px;padding:6px 10px;font-size:12px;border:1px solid var(--border)}
+    /* Cards grid */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+    .card{grid-column:span 4;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;box-shadow:var(--shadow);transition:transform .25s ease, box-shadow .25s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(16,24,40,.12),0 6px 14px rgba(16,24,40,.08)}
+    .icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--brand1),var(--brand2));margin-bottom:10px}
+    .card h3{margin:6px 0 8px;font-size:20px}
+    .card p{color:var(--ink-weak)}
 
-    .progress{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
-    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+    /* Feature rows */
+    .feature{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:22px;padding:26px}
+    .feature + .feature{margin-top:18px}
+    .ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .ul li{display:flex;gap:10px;align-items:flex-start}
+    .dot{width:22px;height:22px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff;flex:none}
 
-    .section{display:grid;gap:12px}
-    .section .head{display:flex;align-items:center;justify-content:space-between}
-    .section .head .tabs{display:flex;gap:8px;flex-wrap:wrap}
-    .tab{padding:8px 12px;border-radius:999px;border:1px solid var(--border);background:var(--card);cursor:pointer}
-    .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#0b0d12;font-weight:700;border-color:transparent}
+    /* CTA banner */
+    .cta-banner{margin-top:26px;background:linear-gradient(135deg,var(--brand1),var(--brand2));color:#fff;border-radius:22px;padding:26px;display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:center;box-shadow:var(--shadow)}
 
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
-    th{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
-    tbody tr:hover{background:rgba(122,169,255,.08)}
-    .avatar{width:24px;height:24px;border-radius:999px;background:linear-gradient(135deg,var(--accent-2),var(--accent));display:inline-grid;place-items:center;color:#0b0d12;font-weight:700}
+    /* Contact */
+    form{display:grid;gap:14px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    input,textarea,select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--ink);font:inherit}
+    input:focus,textarea:focus,select:focus{outline:3px solid color-mix(in oklab, var(--brand2), transparent 65%);border-color:var(--brand2)}
 
-    .kanban{display:grid;gap:12px}
-    @media(min-width:900px){.kanban{grid-template-columns:repeat(4,1fr)}}
-    .lane{display:grid;gap:10px}
-    .lane h4{margin:0;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
-    .task{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;display:grid;gap:8px;cursor:grab}
-    .task .meta{display:flex;justify-content:space-between;align-items:center}
+    /* Footer */
+    footer{padding:46px 0;border-top:1px solid var(--border);color:var(--ink-weak)}
 
-    .chart{width:100%;height:140px}
-    .svg{width:100%;height:100%}
+    /* Responsive */
+    @media (max-width:980px){.hero-inner,.feature,.cta-banner{grid-template-columns:1fr}.grid .card{grid-column:span 6}}
+    @media (max-width:760px){nav ul{display:none}.menu{display:inline-grid;place-items:center;width:42px;height:42px;border:1px solid var(--border);border-radius:12px}.mobile-nav{display:none;position:absolute;inset:62px 0 auto 0;background:var(--bg);border-bottom:1px solid var(--border)}.mobile-nav ul{list-style:none;margin:0;padding:10px 16px 16px;display:grid;gap:6px}.mobile-nav a{display:block;padding:12px;border-radius:10px;color:var(--ink-weak)}.mobile-nav a:hover{background:var(--bg-soft);color:var(--ink)}}
+    @media (max-width:540px){.grid .card{grid-column:span 12}.row{grid-template-columns:1fr}}
 
-    .tag{border-radius:8px;padding:6px 8px;border:1px solid var(--border);font-size:12px;background:var(--chip);display:inline-block}
-
-    .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
-    .calendar .day{border:1px solid var(--border);border-radius:12px;padding:8px;min-height:84px;background:var(--card)}
-    .calendar .day .dt{font-size:12px;color:var(--muted)}
-
-    .footer{padding:30px 0;color:var(--muted);text-align:center}
-
-    /* Modal */
-    dialog{border:0;border-radius:16px;max-width:560px;width:clamp(300px,90vw,560px);box-shadow:var(--shadow)}
-    dialog::backdrop{background:rgba(0,0,0,.4)}
-    .modal-body{padding:0;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-    .modal-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-    .modal-content{padding:16px;display:grid;gap:10px}
-    .row{display:grid;gap:10px}
-    @media(min-width:600px){.row.two{grid-template-columns:1fr 1fr}}
-    input, textarea{border:1px solid var(--border);background:var(--card);padding:10px 12px;border-radius:12px;color:var(--text)}
-    label{font-size:12px;color:var(--muted)}
-
-    .hide-on-mobile{display:none}
-    @media(min-width:900px){.hide-on-mobile{display:initial}}
-    .only-mobile{display:initial}
-    @media(min-width:900px){.only-mobile{display:none}}
+    /* Simple reveal */
+    .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.in{opacity:1;transform:none}
   </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
-    <div class="nav">
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" role="img" aria-label="ARCHI">
-            <path d="M4 18L12 2l8 16H4zm12.5 0L12 8l-4.5 10h9z"/>
-          </svg>
-        </div>
-        <div>
-          <div style="font-weight:800">ARCHI‑ERP</div>
-          <div style="font-size:12px;color:var(--muted)">One‑page studio operations</div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn" onclick="scrollToId('projects')">Projects</button>
-        <button class="btn" onclick="scrollToId('timesheets')">Timesheets</button>
-        <button class="btn" onclick="scrollToId('invoices')">Invoices</button>
-        <button class="btn primary" id="newProjectBtn">New Project</button>
-        <button class="btn icon" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1Zm0 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm8-4a1 1 0 0 1-1 1h-2a1 1 0 1 1 0-2h2a1 1 0 0 1 1 1ZM7 13a1 1 0 1 1 0-2H5a1 1 0 1 1 0 2h2Zm9.95 5.536a1 1 0 0 1-1.414 0l-1.414-1.414a1 1 0 1 1 1.415-1.415l1.414 1.415a1 1 0 0 1 0 1.414ZM9.879 7.88a1 1 0 0 1-1.415-1.415L9.88 5.05A1 1 0 1 1 11.293 6.465L9.879 7.88Zm8.485-2.828a1 1 0 0 1 0 1.415l-1.415 1.414A1 1 0 0 1 15.535 6.05l1.415-1.415a1 1 0 0 1 1.414 0ZM7.05 17.95a1 1 0 0 1 0-1.414l1.414-1.415a1 1 0 1 1 1.415 1.415L8.465 17.95a1 1 0 0 1-1.414 0Z"/></svg>
-        </button>
-        <button class="btn icon only-mobile" id="openSearch" title="Search">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M10 3a7 7 0 1 1 4.9 11.9l3.6 3.6-1.4 1.4-3.6-3.6A7 7 0 0 1 10 3m0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10"/></svg>
-        </button>
-      </div>
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Elegido home">
+        <!-- keep your logo files in the Images/ folder or update the path -->
+        <img src="./Images/Elegido Logo.png" alt="Elegido logo" />
+        <span>ELEGIDO</span>
+      </a>
+
+      <nav aria-label="Primary navigation">
+        <ul>
+          <li><a class="active" href="#top">Home</a></li>
+          <!-- <li><a href="#about">About</a></li> -->
+          <li><a href="#services">Services</a></li>
+          <li><a href="#clients">Who We Serve</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <button class="menu" aria-label="Open menu" aria-controls="mobile-nav" aria-expanded="false">≡</button>
+      <a href="#contact" class="btn">Build with ELEGIDO</a>
     </div>
-    <div class="toolbar">
-      <div class="search"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M10 3a7 7 0 1 1 4.9 11.9l3.6 3.6-1.4 1.4-3.6-3.6A7 7 0 0 1 10 3m0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10"/></svg><input id="globalSearch" placeholder="Search projects, tasks, clients… (Ctrl+/)"/></div>
-      <div class="filters">
-        <select id="statusFilter"><option value="">All Status</option><option>Active</option><option>On Hold</option><option>Completed</option></select>
-        <select id="phaseFilter"><option value="">All Phases</option><option>Concept</option><option>Design Development</option><option>Construction Docs</option><option>Site</option></select>
-        <select id="ownerFilter"><option value="">All Owners</option><option>Rachel</option><option>Abiola</option><option>Hassan</option><option>Chioma</option></select>
-      </div>
+
+    <!-- Mobile nav (hidden by default) -->
+    <div class="mobile-nav" id="mobile-nav" role="dialog" aria-modal="true" aria-label="Mobile Menu" style="display:none">
+      <ul>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#clients">Who We Serve</a></li>
+        <li><a href="#process">How We Work</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
   </header>
 
-  <main class="container">
-    <!-- KPIs -->
-    <section class="grid cols-4" aria-label="Key metrics">
-      <div class="card">
-        <h3>Active Projects</h3>
-        <div class="kpi"><div class="big" id="kpiProjects">12</div><span class="chip"><span style="width:8px;height:8px;border-radius:999px;background:var(--ok);display:inline-block"></span> +2 this month</span></div>
-        <div class="progress" style="margin-top:10px"><i style="width:72%"></i></div>
-      </div>
-      <div class="card">
-        <h3>Pending RFIs</h3>
-        <div class="kpi"><div class="big" id="kpiRFIs">7</div><span class="chip">Median age 3d</span></div>
-        <div class="progress" style="margin-top:10px"><i style="width:35%;background:linear-gradient(90deg,var(--warn),#ffd88a)"></i></div>
-      </div>
-      <div class="card">
-        <h3>Invoices Due</h3>
-        <div class="kpi"><div class="big" id="kpiInvoices">₦4.2m</div><span class="chip">Next in 5 days</span></div>
-        <div class="progress" style="margin-top:10px"><i style="width:55%;background:linear-gradient(90deg,var(--bad),#ff9e98)"></i></div>
-      </div>
-      <div class="card">
-        <h3>Utilization</h3>
-        <div class="kpi"><div class="big" id="kpiUtil">76%</div><span class="chip">Target 80%</span></div>
-        <div class="chart" id="utilChart"></div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects" class="section" style="margin-top:20px">
-      <div class="head">
-        <h2 style="margin:0">Projects</h2>
-        <div class="tabs">
-          <button class="tab active" data-tab="all">All</button>
-          <button class="tab" data-tab="active">Active</button>
-          <button class="tab" data-tab="onhold">On Hold</button>
-          <button class="tab" data-tab="completed">Completed</button>
-        </div>
-      </div>
-      <div class="card">
-        <div style="overflow:auto">
-          <table id="projectsTable" aria-label="Projects table">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Project</th>
-                <th>Client</th>
-                <th>Phase</th>
-                <th>PM</th>
-                <th>Budget</th>
-                <th>Spent</th>
-                <th>Progress</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- Kanban Tasks -->
-    <section id="tasks" class="section" style="margin-top:10px">
-      <div class="head"><h2 style="margin:0">Tasks</h2><div class="tabs"><span class="chip">Drag between lanes</span><button class="tab" id="addTaskBtn">+ Add Task</button></div></div>
-      <div class="kanban" id="kanban"></div>
-    </section>
-
-    <!-- Timesheets -->
-    <section id="timesheets" class="section" style="margin-top:10px">
-      <div class="head"><h2 style="margin:0">Timesheets</h2><div class="tabs"><button class="tab" id="logTimeBtn">+ Log Time</button></div></div>
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Week of <span id="weekOf"></span></h3>
-          <div style="overflow:auto">
-            <table id="timesheetTable">
-              <thead><tr><th>Team</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Total</th></tr></thead>
-              <tbody></tbody>
-            </table>
+  <!-- HERO -->
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <span class="eyebrow">Innovation • Integration • Impact</span>
+          <h1>Innovation. Integration. Impact.</h1>
+          <p class="lead">At <strong>ELEGIDO</strong>, we craft intelligent, elegant, and scalable digital solutions — transforming bold ideas into products that empower startups, enterprises, and brands worldwide.</p>
+          <div class="chips">
+            <span class="chip">Cloud-First</span>
+            <span class="chip">AI-Driven</span>
+            <span class="chip">User-Centric</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap">
+            <a class="btn" href="#services">Explore Services</a>
+            <a class="btn" href="#contact" style="background:transparent;color:var(--brand2);border:2px solid color-mix(in oklab, var(--brand2), transparent 30%);box-shadow:none">Book a Consultation</a>
           </div>
         </div>
-        <div class="card">
-          <h3>Billable vs Non‑billable</h3>
-          <div class="chart" id="billableChart"></div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><span class="tag">Billable 78%</span><span class="tag">Non‑billable 22%</span></div>
-        </div>
+        <div class="hero-art" aria-hidden="true"></div>
       </div>
     </section>
 
-    <!-- RFIs & Drawings -->
-    <section id="rfi" class="grid cols-2" style="margin-top:10px">
-      <div class="card">
-        <div class="head"><h2 style="margin:0">RFIs & Submittals</h2><button class="tab" id="newRfiBtn">+ New RFI</button></div>
-        <div style="overflow:auto">
-          <table id="rfiTable"><thead><tr><th>#</th><th>Project</th><th>Subject</th><th>Assigned</th><th>Due</th><th>Status</th></tr></thead><tbody></tbody></table>
-        </div>
+    <!-- SERVICES -->
+    <section id="services" class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Our Expertise</span>
+        <h2 class="section-title">Smart Technology. Scalable Solutions.</h2>
+        <p class="section-sub">We design and develop end-to-end digital products that merge creativity, performance, and innovation — built for growth and impact.</p>
       </div>
-      <div class="card">
-        <div class="head"><h2 style="margin:0">Drawing Register</h2><button class="tab" id="uploadDrawingBtn">+ Upload</button></div>
-        <div style="overflow:auto">
-          <table id="drawingsTable"><thead><tr><th>Project</th><th>Discipline</th><th>Sheet</th><th>Rev</th><th>Date</th><th>Issued To</th></tr></thead><tbody></tbody></table>
+
+      <div class="grid">
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">💻</div>
+          <h3>Web & App Development</h3>
+          <p>Responsive, fast, and visually striking websites and mobile apps that bring your brand to life — from e-commerce to SaaS platforms. We focus on performance, accessibility, and conversion.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">☁️</div>
+          <h3>Cloud & IT Infrastructure</h3>
+          <p>Secure, scalable, and efficient cloud environments (AWS, Azure, GCP or private) designed for resilience, observability, and cost-efficiency.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🧠</div>
+          <h3>AI & Data</h3>
+          <p>Data pipelines, analytics dashboards, ML/AI features, RAG/search, and decision support to turn data into actionable insight.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🤖</div>
+          <h3>Digital Strategy & Automation</h3>
+          <p>Automation and AI-driven workflows that streamline operations, increase velocity, and improve customer experience.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🛒</div>
+          <h3>E-Commerce & Brand Platforms</h3>
+          <p>Sleek online stores and branded platforms that engage, convert, and scale — from checkout optimization to subscription & billing systems.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🎓</div>
+          <h3>Training & Bootcamps</h3>
+          <p>Hands-on programs to upskill product, cloud, and engineering teams — tailored to your stack and goals.</p>
+        </article>
+      </div>
+
+      <div class="cta-banner reveal" role="region" aria-label="Get a consultation">
+        <div>
+          <h3 style="margin:0 0 6px">Get a tailored roadmap in 7 days</h3>
+          <p style="margin:0">We’ll assess your systems and deliver a prioritized plan with quick wins, estimated costs, and ROI projections.</p>
         </div>
+        <div style="text-align:right"><a class="btn" href="#contact" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35)">Book Free Consultation</a></div>
       </div>
     </section>
 
-    <!-- Invoices & Clients -->
-    <section id="invoices" class="grid cols-2" style="margin-top:10px">
-      <div class="card">
-        <div class="head"><h2 style="margin:0">Invoices & Payments</h2><button class="tab" id="newInvoiceBtn">+ New Invoice</button></div>
-        <div style="overflow:auto">
-          <table id="invoiceTable"><thead><tr><th>No.</th><th>Client</th><th>Project</th><th>Amount</th><th>Due</th><th>Status</th></tr></thead><tbody></tbody></table>
+    <!-- WHO WE SERVE -->
+    <section id="clients" class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Who We Serve</span>
+        <h2 class="section-title">Empowering Visionaries Across Industries</h2>
+        <p class="section-sub">We partner with startups, enterprises, and creators who dare to think beyond limits — building technology that inspires and scales.</p>
+      </div>
+
+      <div class="feature reveal" aria-hidden="false">
+        <div>
+          <h3>Startups & Entrepreneurs</h3>
+          <p class="section-sub">From MVP to full product launch, we help founders transform concepts into scalable digital realities with precision and speed.</p>
+          <ul class="ul">
+            <li><span class="dot">✓</span><span>Custom-built web and app solutions</span></li>
+            <li><span class="dot">✓</span><span>Cloud-native architecture for growth</span></li>
+            <li><span class="dot">✓</span><span>Analytics & conversion optimization</span></li>
+          </ul>
+        </div>
+        <div class="hero-art" aria-hidden="true" style="min-height:260px"></div>
+      </div>
+
+      <div class="feature reveal">
+        <div class="hero-art" aria-hidden="true" style="min-height:260px"></div>
+        <div>
+          <h3>Businesses & Enterprises</h3>
+          <p class="section-sub">We modernize systems, automate processes, and enhance performance for organizations ready to evolve digitally.</p>
+          <ul class="ul">
+            <li><span class="dot">✓</span><span>Enterprise-grade software and portals</span></li>
+            <li><span class="dot">✓</span><span>Automation & workflow integration</span></li>
+            <li><span class="dot">✓</span><span>Scalable, secure cloud deployments</span></li>
+          </ul>
         </div>
       </div>
-      <div class="card">
-        <div class="head"><h2 style="margin:0">Clients & Contacts</h2><button class="tab" id="addClientBtn">+ Add Client</button></div>
-        <div class="grid cols-2" id="clients"></div>
+
+      <div class="feature reveal">
+        <div>
+          <h3>Public & Social Impact</h3>
+          <p class="section-sub">NGOs, foundations and government programs need transparency and accountability — we build auditable and inclusive systems.</p>
+          <ul class="ul">
+            <li><span class="dot">✓</span><span>Grant & beneficiary management portals</span></li>
+            <li><span class="dot">✓</span><span>Role-based access and audit trails</span></li>
+            <li><span class="dot">✓</span><span>WCAG-aware accessible interfaces</span></li>
+          </ul>
+        </div>
+        <div class="hero-art" aria-hidden="true" style="min-height:260px"></div>
       </div>
     </section>
 
-    <!-- Resource Planning & Calendar -->
-    <section class="grid cols-2" style="margin-top:10px">
-      <div class="card">
-        <div class="head"><h2 style="margin:0">Resource Planning</h2><span class="chip">Next 8 weeks</span></div>
-        <div class="chart" id="resChart"></div>
+    <!-- HOW WE WORK / PROCESS -->
+    <section id="process" class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">How We Work</span>
+        <h2 class="section-title">Clear engagement models and predictable pricing.</h2>
+        <p class="section-sub">Choose a model that fits your need today and scale as you grow.</p>
       </div>
-      <div class="card">
-        <div class="head"><h2 style="margin:0">Studio Calendar</h2><span class="chip" id="monthLabel">September 2025</span></div>
-        <div class="calendar" id="calendar"></div>
+
+      <div class="grid">
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🧩</div>
+          <h3>Projects</h3>
+          <p>Fixed-scope or milestone-based builds — integrations, product launches, and major upgrades with clear timelines and deliverables.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">🔁</div>
+          <h3>Retainers</h3>
+          <p>Embedded teams for ongoing product development, maintenance, and optimization — keep shipping with a predictable cadence.</p>
+        </article>
+
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">📦</div>
+          <h3>SaaS</h3>
+          <p>Subscription tools and pre-built modules for common needs — auth, billing, dashboards — deployed with best practices out of the box.</p>
+        </article>
       </div>
     </section>
 
-    <div class="footer">© <span id="year"></span> ARCHI‑ERP — Built for architecture & design studios</div>
+    <!-- CONTACT -->
+    <section id="contact" class="container">
+      <div class="section-head">
+        <span class="section-eyebrow">Let’s Connect</span>
+        <h2 class="section-title">Start Your Project with ELEGIDO</h2>
+        <p class="section-sub">Tell us about your idea — we’ll reply within one business day.</p>
+      </div>
+
+      <form class="reveal" action="mailto:elegidointl@gmail.com" method="post" enctype="text/plain">
+        <div class="row">
+          <div>
+            <label class="section-sub" for="name">Full Name</label>
+            <input id="name" name="name" type="text" placeholder="Full Name" required />
+          </div>
+          <div>
+            <label class="section-sub" for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="Prefered email" required />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label class="section-sub" for="company">Company</label>
+            <input id="company" name="company" type="text" placeholder="Your company" />
+          </div>
+          <div>
+            <label class="section-sub" for="budget">Budget</label>
+            <select id="budget" name="budget">
+              <option value="Not sure">Not sure</option>
+              <option value="$1k–$5k">$1k–$5k</option>
+              <option value="$5k–$25k">$5k–$25k</option>
+              <option value="$25k–$100k">$25k–$100k</option>
+              <option value="$100k+">$100k+</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="section-sub" for="message">Project Details</label>
+          <textarea id="message" name="message" rows="6" placeholder="Describe your project, goals, timeline, and success criteria…" required></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <button class="btn" type="submit">Send Request</button>
+          <span class="section-sub">or email <a href="mailto:elegidointl@gmail.com" style="text-decoration:underline">elegidointl@gmail.com</a></span>
+        </div>
+      </form>
+    </section>
   </main>
 
-  <!-- Modals -->
-  <dialog id="projectModal">
-    <div class="modal-body">
-      <div class="modal-head"><strong>New Project</strong><button class="btn" onclick="closeModal('projectModal')">Close</button></div>
-      <div class="modal-content">
-        <div class="row two">
-          <div><label>Project Name</label><input id="pName" placeholder="Eg. Civic Center Renovation"></div>
-          <div><label>Client</label><input id="pClient" placeholder="Eg. Abuja Civic Works"></div>
-        </div>
-        <div class="row two">
-          <div><label>Phase</label><input id="pPhase" placeholder="Concept / DD / CDs / Site"></div>
-          <div><label>Budget (₦)</label><input id="pBudget" type="number" placeholder="20000000"></div>
-        </div>
-        <div class="row two">
-          <div><label>Project Manager</label><input id="pPM" placeholder="Eg. Rachel"></div>
-          <div><label>Status</label><input id="pStatus" placeholder="Active / On Hold / Completed"></div>
-        </div>
-        <button class="btn primary" onclick="saveProject()">Save Project</button>
+  <!-- FOOTER -->
+  <footer>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <img src="./Images/Elegido Icon.png" alt="Elegido icon" style="height:20px;width:auto" />
+        <strong>ELEGIDO</strong>
       </div>
+      <small class="section-sub">© <span id="y"></span> ELEGIDO • Innovation. Integration. Impact.</small>
     </div>
-  </dialog>
-
-  <dialog id="taskModal">
-    <div class="modal-body">
-      <div class="modal-head"><strong>Add Task</strong><button class="btn" onclick="closeModal('taskModal')">Close</button></div>
-      <div class="modal-content">
-        <div class="row two">
-          <div><label>Task Title</label><input id="tTitle" placeholder="Eg. Elevation options"></div>
-          <div><label>Assignee</label><input id="tAssignee" placeholder="Eg. Chioma"></div>
-        </div>
-        <div><label>Details</label><textarea id="tDetail" rows="3" placeholder="Notes, links, acceptance criteria…"></textarea></div>
-        <button class="btn primary" onclick="saveTask()">Add Task</button>
-      </div>
-    </div>
-  </dialog>
-
-  <dialog id="timeModal">
-    <div class="modal-body">
-      <div class="modal-head"><strong>Log Time</strong><button class="btn" onclick="closeModal('timeModal')">Close</button></div>
-      <div class="modal-content">
-        <div class="row two">
-          <div><label>Project</label><input id="tsProject" placeholder="Project code or name"></div>
-          <div><label>Hours</label><input id="tsHours" type="number" placeholder="2.5"></div>
-        </div>
-        <div class="row two">
-          <div><label>Team Member</label><input id="tsMember" placeholder="Eg. Hassan"></div>
-          <div><label>Date</label><input id="tsDate" type="date"></div>
-        </div>
-        <button class="btn primary" onclick="saveTime()">Save Entry</button>
-      </div>
-    </div>
-  </dialog>
+  </footer>
 
   <script>
-    // Helpers
-    const $ = (q, el=document) => el.querySelector(q);
-    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
-    const byId = id => document.getElementById(id);
-
-    function scrollToId(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
-    function openModal(id){ byId(id).showModal(); }
-    function closeModal(id){ byId(id).close(); }
-
-    // Theme toggle
-    const themeToggle = byId('themeToggle');
-    themeToggle.addEventListener('click', () => {
-      const html = document.documentElement;
-      const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('archi_theme', next);
+    // Mobile menu toggle
+    const menuBtn = document.querySelector('.menu');
+    const mobileNav = document.getElementById('mobile-nav');
+    menuBtn?.addEventListener('click', () => {
+      const open = mobileNav.style.display === 'block';
+      mobileNav.style.display = open ? 'none' : 'block';
+      menuBtn.setAttribute('aria-expanded', (!open).toString());
     });
-    (function(){
-      const saved = localStorage.getItem('archi_theme');
-      if(saved) document.documentElement.setAttribute('data-theme', saved);
-      byId('year').textContent = new Date().getFullYear();
-    })();
 
-    // Keyboard search shortcut
-    window.addEventListener('keydown', e=>{ if(e.ctrlKey && e.key === '/'){ e.preventDefault(); byId('globalSearch').focus(); }});
-
-    // Demo Data
-    const projects = [
-      {code:'A‑021', name:'Civic Center Renovation', client:'Abuja Civic Works', phase:'Design Development', pm:'Rachel', budget:28000000, spent:14000000, progress:50, status:'Active'},
-      {code:'R‑118', name:'Riverfront Apartments', client:'Bayview RE', phase:'Construction Docs', pm:'Hassan', budget:56000000, spent:42000000, progress:75, status:'Active'},
-      {code:'S‑332', name:'Sunrise Primary School', client:'FCT Education', phase:'Concept', pm:'Chioma', budget:18000000, spent:2000000, progress:12, status:'On Hold'},
-      {code:'O‑045', name:'Oil & Gas HQ Lobby', client:'PetroCore', phase:'Site', pm:'Abiola', budget:12000000, spent:9000000, progress:80, status:'Active'},
-      {code:'P‑509', name:'Private Residence Ikoyi', client:'K. Ayodele', phase:'Construction Docs', pm:'Rachel', budget:22000000, spent:8000000, progress:36, status:'Active'},
-      {code:'M‑277', name:'Modern Mosque', client:'Unity Foundation', phase:'Design Development', pm:'Hassan', budget:26000000, spent:11000000, progress:44, status:'Active'},
-      {code:'T‑194', name:'Tech Hub Extension', client:'ELEGIDO', phase:'Concept', pm:'Chioma', budget:24000000, spent:4000000, progress:18, status:'Active'},
-      {code:'H‑063', name:'Hospital Ward Upgrade', client:'General Health', phase:'Construction Docs', pm:'Abiola', budget:30000000, spent:21000000, progress:70, status:'Completed'}
-    ];
-
-    const rfi = [
-      {no:'RFI‑107', project:'R‑118', subject:'Window schedule clarification', assigned:'Hassan', due:'2025‑09‑08', status:'Open'},
-      {no:'RFI‑108', project:'A‑021', subject:'Ceiling height variance', assigned:'Rachel', due:'2025‑09‑05', status:'Open'},
-      {no:'SUB‑044', project:'P‑509', subject:'Lighting cut sheets', assigned:'Chioma', due:'2025‑09‑04', status:'Review'},
-      {no:'RFI‑109', project:'O‑045', subject:'Stone cladding anchor', assigned:'Abiola', due:'2025‑09‑10', status:'Closed'}
-    ];
-
-    const drawings = [
-      {project:'R‑118', discipline:'A', sheet:'A‑201 Elevations', rev:'C', date:'2025‑09‑01', issued:'Structural Eng.'},
-      {project:'A‑021', discipline:'A', sheet:'A‑101 Floor Plan', rev:'B', date:'2025‑08‑26', issued:'Client'},
-      {project:'P‑509', discipline:'ID', sheet:'ID‑301 Kitchen Layout', rev:'A', date:'2025‑08‑29', issued:'MEP Eng.'}
-    ];
-
-    const invoices = [
-      {no:'INV‑2207', client:'Bayview RE', project:'R‑118', amount:2200000, due:'2025‑09‑08', status:'Due'},
-      {no:'INV‑2208', client:'Abuja Civic Works', project:'A‑021', amount:1400000, due:'2025‑09‑12', status:'Pending'},
-      {no:'INV‑2209', client:'PetroCore', project:'O‑045', amount:1800000, due:'2025‑09‑20', status:'Sent'},
-      {no:'INV‑2210', client:'K. Ayodele', project:'P‑509', amount:950000, due:'2025‑09‑04', status:'Overdue'}
-    ];
-
-    const clients = [
-      {name:'Bayview RE', contact:'tunde@bayview.com', person:'Tunde', projects:2},
-      {name:'Abuja Civic Works', contact:'info@acw.gov.ng', person:'Miriam', projects:1},
-      {name:'PetroCore', contact:'projects@petrocore.ng', person:'Segun', projects:1},
-      {name:'K. Ayodele', contact:'kayode@mail.com', person:'Kayode', projects:1}
-    ];
-
-    const people = ['Rachel','Abiola','Hassan','Chioma'];
-
-    // Populate Projects
-    function renderProjects(list){
-      const tbody = byId('projectsTable').querySelector('tbody');
-      tbody.innerHTML = '';
-      list.forEach(p=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><span class="tag">${p.code}</span></td>
-          <td>${p.name}</td>
-          <td>${p.client}</td>
-          <td>${p.phase}</td>
-          <td><span class="avatar" title="${p.pm}">${p.pm[0]}</span></td>
-          <td>₦${(p.budget).toLocaleString()}</td>
-          <td>₦${(p.spent).toLocaleString()}</td>
-          <td><div class="progress"><i style="width:${p.progress}%"></i></div></td>
-          <td><span class="chip" style="${p.status==='Completed'?'background:rgba(65,213,162,.15);color:var(--ok)':''}">${p.status}</span></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    // Filters
-    const statusFilter = byId('statusFilter');
-    const phaseFilter = byId('phaseFilter');
-    const ownerFilter = byId('ownerFilter');
-    function applyFilters(){
-      const s = statusFilter.value; const ph = phaseFilter.value; const ow = ownerFilter.value;
-      const query = byId('globalSearch').value?.toLowerCase() || '';
-      const filtered = projects.filter(p=>
-        (!s || p.status===s) && (!ph || p.phase===ph) && (!ow || p.pm===ow) &&
-        (p.name.toLowerCase().includes(query) || p.client.toLowerCase().includes(query) || p.code.toLowerCase().includes(query))
-      );
-      renderProjects(filtered);
-    }
-    [statusFilter,phaseFilter,ownerFilter,byId('globalSearch')].forEach(el=>el.addEventListener('input',applyFilters));
-
-    // Tabs for Projects
-    $$('.tab[data-tab]').forEach(tab=>tab.addEventListener('click',()=>{
-      $$('.tab[data-tab]').forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      const type = tab.dataset.tab;
-      let list = projects;
-      if(type==='active') list = projects.filter(p=>p.status==='Active');
-      if(type==='onhold') list = projects.filter(p=>p.status==='On Hold');
-      if(type==='completed') list = projects.filter(p=>p.status==='Completed');
-      renderProjects(list);
-    }));
-
-    // RFIs table
-    function renderRFI(){
-      const tbody = byId('rfiTable').querySelector('tbody');
-      tbody.innerHTML='';
-      rfi.forEach(x=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${x.no}</td><td>${x.project}</td><td>${x.subject}</td><td>${x.assigned}</td><td>${x.due}</td><td><span class="chip">${x.status}</span></td>`;
-        tbody.appendChild(tr);
-      })
-    }
-
-    // Drawings table
-    function renderDrawings(){
-      const tbody = byId('drawingsTable').querySelector('tbody');
-      tbody.innerHTML='';
-      drawings.forEach(d=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${d.project}</td><td>${d.discipline}</td><td>${d.sheet}</td><td>${d.rev}</td><td>${d.date}</td><td>${d.issued}</td>`;
-        tbody.appendChild(tr);
-      })
-    }
-
-    // Invoices table
-    function renderInvoices(){
-      const tbody = byId('invoiceTable').querySelector('tbody');
-      tbody.innerHTML='';
-      invoices.forEach(inv=>{
-        const tr = document.createElement('tr');
-        const statusColor = inv.status==='Overdue' ? 'var(--bad)' : inv.status==='Due' ? 'var(--warn)' : 'var(--info)';
-        tr.innerHTML = `<td>${inv.no}</td><td>${inv.client}</td><td>${inv.project}</td><td>₦${inv.amount.toLocaleString()}</td><td>${inv.due}</td><td><span class="chip" style="color:${statusColor}">${inv.status}</span></td>`;
-        tbody.appendChild(tr);
-      })
-    }
-
-    // Clients grid
-    function renderClients(){
-      const wrap = byId('clients');
-      wrap.innerHTML='';
-      clients.forEach(c=>{
-        const card = document.createElement('div');
-        card.className='card';
-        card.innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <div style="display:flex;align-items:center;gap:10px">
-              <div class="avatar" aria-hidden="true">${c.name[0]}</div>
-              <div>
-                <div style="font-weight:700">${c.name}</div>
-                <div style="font-size:12px;color:var(--muted)">${c.person} • ${c.contact}</div>
-              </div>
-            </div>
-            <span class="chip">${c.projects} projects</span>
-          </div>`;
-        wrap.appendChild(card);
-      })
-    }
-
-    // Kanban
-    const lanes = [
-      {key:'backlog', title:'Backlog'},
-      {key:'design', title:'Design'},
-      {key:'review', title:'Review'},
-      {key:'done', title:'Done'}
-    ];
-    let tasks = [
-      {id:1, title:'Concept sketches', who:'Rachel', lane:'backlog'},
-      {id:2, title:'3D massing study', who:'Hassan', lane:'design'},
-      {id:3, title:'Material palette', who:'Chioma', lane:'review'},
-      {id:4, title:'Client presentation', who:'Abiola', lane:'done'}
-    ];
-
-    function renderKanban(){
-      const wrap = byId('kanban');
-      wrap.innerHTML='';
-      lanes.forEach(l=>{
-        const lane = document.createElement('div');
-        lane.className='lane card';
-        lane.dataset.lane=l.key;
-        lane.innerHTML = `<h4>${l.title}</h4><div class="lane-body" style="display:grid;gap:8px;min-height:40px"></div>`;
-        wrap.appendChild(lane);
-      });
-      tasks.forEach(t=>{
-        const card = document.createElement('div');
-        card.className='task';
-        card.draggable=true; card.dataset.id=t.id;
-        card.innerHTML = `<div class="meta"><strong>${t.title}</strong><span class="avatar" title="${t.who}">${t.who[0]}</span></div>`;
-        const target = $(`.lane[data-lane="${t.lane}"] .lane-body`);
-        target.appendChild(card);
-      });
-      enableDnD();
-    }
-
-    function enableDnD(){
-      $$('.task').forEach(el=>{
-        el.addEventListener('dragstart', e=>{ e.dataTransfer.setData('text/plain', el.dataset.id); });
-      });
-      $$('.lane').forEach(l=>{
-        l.addEventListener('dragover', e=>{ e.preventDefault(); });
-        l.addEventListener('drop', e=>{ e.preventDefault(); const id = +e.dataTransfer.getData('text/plain'); const lane = l.dataset.lane; const task = tasks.find(t=>t.id===id); task.lane = lane; renderKanban(); });
-      });
-    }
-
-    // Simple SVG charts (no external libs)
-    function sparkline(containerId, points){
-      const el = byId(containerId); el.innerHTML='';
-      const w = el.clientWidth || 320, h = el.clientHeight || 140, p=8;
-      const max = Math.max(...points), min = Math.min(...points);
-      const norm = v => h - p - ( (v - min) / (max - min || 1) ) * (h - 2*p);
-      const step = (w - 2*p) / (points.length - 1);
-      let d = '';
-      points.forEach((v,i)=>{ d += (i? 'L':'M') + (p + i*step) + ' ' + norm(v) + ' '; });
-      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-      svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.classList.add('svg');
-      const path = document.createElementNS(svg.namespaceURI,'path');
-      path.setAttribute('d', d.trim()); path.setAttribute('fill','none'); path.setAttribute('stroke','currentColor'); path.setAttribute('stroke-width','2');
-      svg.appendChild(path);
-      el.appendChild(svg);
-    }
-
-    function barchart(containerId, labels, values){
-      const el = byId(containerId); el.innerHTML='';
-      const w = el.clientWidth || 320, h = el.clientHeight || 140, p=16;
-      const max = Math.max(...values) || 1;
-      const bw = (w - 2*p) / values.length;
-      const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-      svg.setAttribute('viewBox',`0 0 ${w} ${h}`); svg.classList.add('svg');
-      values.forEach((v,i)=>{
-        const bh = (v/max) * (h - 2*p);
-        const rect = document.createElementNS(svg.namespaceURI,'rect');
-        rect.setAttribute('x', p + i*bw + bw*.1);
-        rect.setAttribute('y', h - p - bh);
-        rect.setAttribute('width', bw*.8);
-        rect.setAttribute('height', bh);
-        rect.setAttribute('rx','6');
-        rect.setAttribute('fill','currentColor');
-        svg.appendChild(rect);
-      });
-      el.appendChild(svg);
-    }
-
-    // Timesheet week table
-    function renderTimesheet(){
-      const tbody = byId('timesheetTable').querySelector('tbody');
-      tbody.innerHTML='';
-      const week = ['Mon','Tue','Wed','Thu','Fri'];
-      const rows = people.map(name=>{
-        const hours = week.map(()=> (Math.random()*3+4).toFixed(1));
-        const total = hours.reduce((a,b)=> a + parseFloat(b), 0).toFixed(1);
-        return {name,hours,total};
-      });
-      rows.forEach(r=>{
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${r.name}</td>${r.hours.map(h=>`<td>${h}</td>`).join('')}<td><strong>${r.total}</strong></td>`;
-        tbody.appendChild(tr);
-      });
-      const now = new Date();
-      const monday = new Date(now); const day = now.getDay(); const diff = now.getDate() - day + (day===0?-6:1);
-      monday.setDate(diff);
-      byId('weekOf').textContent = monday.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
-    }
-
-    // Calendar
-    function renderCalendar(year, month){ // month 0-11
-      const wrap = byId('calendar'); wrap.innerHTML='';
-      const first = new Date(year,month,1); const last = new Date(year,month+1,0);
-      const start = first.getDay()===0 ? 6 : first.getDay()-1; // Mon first
-      const total = start + last.getDate();
-      const today = new Date();
-      for(let i=0;i<start;i++){ const d=document.createElement('div'); d.className='day'; wrap.appendChild(d); }
-      for(let d=1; d<=last.getDate(); d++){
-        const cell = document.createElement('div'); cell.className='day';
-        const dt = document.createElement('div'); dt.className='dt'; dt.textContent=d; cell.appendChild(dt);
-        if(d===today.getDate() && month===today.getMonth() && year===today.getFullYear()){
-          const badge=document.createElement('span'); badge.className='chip'; badge.textContent='Today'; cell.appendChild(badge);
-        }
-        wrap.appendChild(cell);
+    // Close mobile nav when clicking outside (optional UX nicety)
+    document.addEventListener('click', (e) => {
+      if (!mobileNav || !menuBtn) return;
+      if (window.innerWidth > 760) return;
+      if (!mobileNav.contains(e.target) && !menuBtn.contains(e.target)) {
+        mobileNav.style.display = 'none';
+        menuBtn.setAttribute('aria-expanded', 'false');
       }
-      byId('monthLabel').textContent = new Date(year,month,1).toLocaleDateString(undefined,{year:'numeric',month:'long'});
-    }
+    });
 
-    // Forms / Modals actions
-    byId('newProjectBtn').addEventListener('click', ()=> openModal('projectModal'));
-    byId('addTaskBtn').addEventListener('click', ()=> openModal('taskModal'));
-    byId('logTimeBtn').addEventListener('click', ()=> openModal('timeModal'));
+    // Intersection Observer reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    function saveProject(){
-      const p = { code: 'X‑' + Math.floor(Math.random()*900+100), name: byId('pName').value || 'Untitled', client: byId('pClient').value||'Client', phase: byId('pPhase').value||'Concept', pm: byId('pPM').value||'Rachel', budget: +byId('pBudget').value||1000000, spent: 0, progress: 0, status: byId('pStatus').value||'Active' };
-      projects.unshift(p); renderProjects(projects); closeModal('projectModal');
-    }
-    function saveTask(){
-      const t = { id: Math.floor(Math.random()*99999), title: byId('tTitle').value||'New Task', who: byId('tAssignee').value||'Rachel', lane:'backlog'}; tasks.unshift(t); renderKanban(); closeModal('taskModal');
-    }
-    function saveTime(){
-      // Demo: add to first row this week
-      renderTimesheet(); closeModal('timeModal');
-    }
-
-    // Initial render
-    function init(){
-      renderProjects(projects);
-      renderRFI();
-      renderDrawings();
-      renderInvoices();
-      renderClients();
-      renderKanban();
-      renderTimesheet();
-      sparkline('utilChart',[62,64,63,70,68,72,71,76]);
-      barchart('billableChart',["B","NB"],[78,22]);
-      barchart('resChart',["W1","W2","W3","W4","W5","W6","W7","W8"],[8,9,10,8,7,11,9,10]);
-      const now = new Date(); renderCalendar(now.getFullYear(), now.getMonth());
-    }
-    init();
-
-    // Global search live filter
-    byId('globalSearch').addEventListener('input', applyFilters);
-
-    // Open search on mobile
-    byId('openSearch').addEventListener('click', ()=> byId('globalSearch').focus());
+    // Dynamic year
+    document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
